@@ -97,6 +97,14 @@ private:
             Permission += clsUser::enPermission::pManageUsers;
         }
 
+        cout << "\nShow Login Register Screen? (Y/N)? ";
+        cin >> Answer;
+        if (Answer == 'Y' || Answer == 'y')
+        {
+            Permission += clsUser::enPermission::pLoginRegister;
+        }
+
+
         return Permission;
 
     }
@@ -125,12 +133,12 @@ public:
         }
 
         clsUser User = clsUser::Find(UserName);
-        if (User.UserName() == "Admin") {
+        /*if (User.UserName() == "Admin") {
             cout << "\n\n========================================================" << endl;
             cout << "\nYou Cannot Update this User!" << endl;
             cout << "\n========================================================" << endl;
             return;
-        }
+        }*/
         _PrintUser(User);
         cout << "\nUpdate User Info: " << endl;
         cout << "---------------------------------------" << endl;

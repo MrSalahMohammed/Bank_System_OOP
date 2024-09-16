@@ -329,4 +329,16 @@ public:
 		return true;
 	}
 
+	bool Transfer(float Amount, clsBankClient& DesClient) {
+
+		if (Amount > Balance) {
+			return false;
+		}
+
+		Withdraw(Amount);
+		DesClient.Deposit(Amount);
+		return true;
+
+	}
+
 };

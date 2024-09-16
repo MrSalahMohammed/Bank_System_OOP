@@ -26,7 +26,7 @@ private:
 
 		vector <string> User = clsString::Split(Line, Seperator);
 
-		return clsUser(enMode::UpdateMode, User[0], User[1], User[2], User[3], User[4], User[5], stoi(User[6]));
+		return clsUser(enMode::UpdateMode, User[0], User[1], User[2], User[3], User[4], clsUtils::DecryptText(User[5], 3) , stoi(User[6]));
 	}
 
 	static vector <clsUser> _LoadUserDataFromFile() {
@@ -61,7 +61,7 @@ private:
 		stUserRecord += User.Email() + Seperator;
 		stUserRecord += User.PhoneNumber() + Seperator;
 		stUserRecord += User.UserName() + Seperator;
-		stUserRecord += User.Password() + Seperator;
+		stUserRecord += clsUtils::EncryptText(User.Password(), 3) + Seperator;
 		stUserRecord += to_string(User.Permission());
 
 		return stUserRecord;
@@ -127,23 +127,91 @@ private:
 
 	}
 
-	string _ConvertLogDataToLine(clsUser User, string Seperator = "#//#") {
+	struct stLoginRegisterRecord;
+	struct stTransferRegisterRecord;
+
+	static stLoginRegisterRecord _ConvertLogRegisterLineToRecord(string Line, string Seperator = "#//#") {
+
+		vector <string> vLogData = clsString::Split(Line, Seperator);
+		stLoginRegisterRecord Record;
+		Record.DateTime = vLogData[0];
+		Record.UserName = vLogData[1];
+		Record.Password = clsUtils::DecryptText(vLogData[2], 3);
+		Record.Permissions = stoi(vLogData[3]);
+
+		return Record;
+	}
+
+	static string _ConvertLogDataToLine(clsUser User, string Seperator = "#//#") {
 
 		string LogData = "";
 		LogData += clsDate::GetSystemDateTimeString() + Seperator;
 		LogData += User.UserName() + Seperator;
-		LogData += User.Password() + Seperator;
+		LogData += clsUtils::EncryptText(User.Password(), 3) + Seperator;
 		LogData += to_string(User.Permission());
 
 		return LogData;
 
 	}
 
+	static string _ConvertTransferDataToLine(clsUser User, clsBankClient User1, clsBankClient User2, int Amount, string Seperator = "#//#") {
+
+		string TransData = "";
+		TransData += clsDate::GetSystemDateTimeString() + Seperator;
+		TransData += User1.AccountNumber() + Seperator;
+		TransData += User2.AccountNumber() + Seperator;
+		TransData += to_string(Amount) + Seperator;
+		TransData += to_string(User1.Balance) + Seperator;
+		TransData += to_string(User2.Balance) + Seperator;
+		TransData += User.UserName();
+
+		return TransData;
+
+	}
+
+	static stTransferRegisterRecord _ConvertTransRegisterLineToRecord(string Line, string Seperator = "#//#") {
+
+		vector <string> vTransData = clsString::Split(Line, Seperator);
+		stTransferRegisterRecord Record;
+		Record.DateTime = vTransData[0];
+		Record.SourceAcc = vTransData[1];
+		Record.DesAcc = vTransData[2];
+		Record.Amount = stoi(vTransData[3]);
+		Record.SourceBalance = stoi(vTransData[4]);
+		Record.DesBalance = stoi(vTransData[5]);
+		Record.User = vTransData[6];
+
+		return Record;
+	}
+
+
 public:
 
 	static enum enPermission {
 		pAll = -1, pShow = 1, pAdd = 2, pDelete = 4,
-		pUpdate = 8, pFind = 16, pTransaction = 32, pManageUsers = 64
+		pUpdate = 8, pFind = 16, pTransaction = 32, pManageUsers = 64,
+		pLoginRegister = 128
+	};
+
+	struct stLoginRegisterRecord {
+
+		string UserName;
+		string Password;
+		string DateTime;
+		int Permissions;
+
+	};
+
+	struct stTransferRegisterRecord {
+
+		string DateTime;
+		string SourceAcc;
+		string DesAcc;
+		int Amount;
+		float SourceBalance;
+		float DesBalance;
+		string User;
+
 	};
 
 	clsUser(enMode Mode, string FirstName, string LastName, string Email,
@@ -339,6 +407,75 @@ public:
 		}
 
 		LogFile.close();
+
+	}
+
+	static vector <stLoginRegisterRecord> LoadDataLogFromFile() {
+		
+		vector <stLoginRegisterRecord> vLoginRegisterRecord;
+		fstream LogFile;
+
+		LogFile.open("LogRegister.txt", ios::in);
+
+		if (LogFile.is_open()) {
+
+			string Line;
+			stLoginRegisterRecord LoginRegisterRecord;
+			while (getline(LogFile, Line))
+			{
+				LoginRegisterRecord = _ConvertLogRegisterLineToRecord(Line);
+				vLoginRegisterRecord.push_back(LoginRegisterRecord);
+			}
+
+		}
+
+		LogFile.close();
+
+		return vLoginRegisterRecord;
+
+	}
+
+	void SaveTransferLog(clsBankClient Client1, clsBankClient Client2, int Amount) {
+
+		fstream LogFile;
+
+		LogFile.open("TransferLog.txt", ios::out | ios::app);
+
+		if (LogFile.is_open()) {
+
+			string Line = _ConvertTransferDataToLine(*this, Client1, Client2, Amount);
+
+			LogFile << Line << endl;
+
+
+		}
+
+		LogFile.close();
+
+	}
+
+	static vector <stTransferRegisterRecord> LoadTransLogFromFile() {
+
+		vector <stTransferRegisterRecord> vTransferRegisterRecord;
+		fstream LogFile;
+
+		LogFile.open("TransferLog.txt", ios::in);
+
+		if (LogFile.is_open()) {
+
+			string Line;
+			stTransferRegisterRecord LoginRegisterRecord;
+			while (getline(LogFile, Line))
+			{
+				LoginRegisterRecord = _ConvertTransRegisterLineToRecord(Line);
+				vTransferRegisterRecord.push_back(LoginRegisterRecord);
+			}
+
+		}
+
+		LogFile.close();
+
+		return vTransferRegisterRecord;
 
 	}
 

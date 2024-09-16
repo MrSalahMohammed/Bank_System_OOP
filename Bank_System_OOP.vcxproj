@@ -141,6 +141,7 @@
     <ClInclude Include="clsAddUsersScreen.h" />
     <ClInclude Include="clsBankClient.h" />
     <ClInclude Include="clsClientListScreen.h" />
+    <ClInclude Include="clsCurrency.h" />
     <ClInclude Include="clsDeleteClientScreen.h" />
     <ClInclude Include="clsDepositScreen.h" />
     <ClInclude Include="clsFindClientScreen.h" />
@@ -149,8 +150,15 @@
     <ClInclude Include="clsPerson.h" />
     <ClInclude Include="clsScreen.h" />
     <ClInclude Include="clsShowAllUsersScreen.h" />
+    <ClInclude Include="clsShowCalcCurrencyScreen.h" />
+    <ClInclude Include="clsShowCurrenciesListScreen.h" />
+    <ClInclude Include="clsShowFindCurrencyScreen.h" />
     <ClInclude Include="clsShowFindUserScreen.h" />
+    <ClInclude Include="clsShowLoginRegisterScreen.h" />
     <ClInclude Include="clsShowLoginScreen.h" />
+    <ClInclude Include="clsShowTransferLogScreen.h" />
+    <ClInclude Include="clsShowTransferScreen.h" />
+    <ClInclude Include="clsShowUpdateCurrencyScreen.h" />
     <ClInclude Include="clsTotalBalancesScreen.h" />
     <ClInclude Include="clsTransactionScreen.h" />
     <ClInclude Include="clsUpdateClientScreen.h" />
@@ -159,6 +167,7 @@
     <ClInclude Include="clsWithdrawScreen.h" />
     <ClInclude Include="clsShowDeleteUsersScreen.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="clsShowCurrencyExchangeScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

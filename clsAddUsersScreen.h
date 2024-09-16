@@ -96,6 +96,13 @@ class clsAddUsersScreen
             Permission += clsUser::enPermission::pManageUsers;
         }
 
+        cout << "\nShow Login Register Screen? (Y/N)? ";
+        cin >> Answer;
+        if (Answer == 'Y' || Answer == 'y')
+        {
+            Permission += clsUser::enPermission::pLoginRegister;
+        }
+
         return Permission;
 
     }

@@ -3,6 +3,8 @@
 #include "clsTotalBalancesScreen.h"
 #include "clsDepositScreen.h"
 #include "clsWithdrawScreen.h"
+#include "clsShowTransferScreen.h"
+#include "clsShowTransferLogScreen.h"
 
 class clsTransactionScreen
 {
@@ -13,12 +15,12 @@ private:
 		system("cls");
 	}
 
-	enum enTransMenuOptions { Deposit = 1, Withdraw = 2, TotalBalances = 3, MainMenu = 4 };
+	enum enTransMenuOptions { Deposit = 1, Withdraw = 2, TotalBalances = 3, Transfer = 4, TransferLog = 5, MainMenu = 6 };
 
 	static short _ReadTransMenuOptions() {
 
-		cout << setw(32) << left << "" << "\tChoose what do you want to do [1] to [4]? ";
-		short choice = clsInputValidate::ReadIntNumberBetween(1, 4, "", "Enter Number between 1 and 4: ");
+		cout << setw(32) << left << "" << "\tChoose what do you want to do [1] to [6]? ";
+		short choice = clsInputValidate::ReadIntNumberBetween(1, 6, "", "Enter Number between 1 and 6: ");
 		return choice;
 	}
 
@@ -41,6 +43,14 @@ private:
 		clsWithdrawScreen::ShowWithdrawScreen();
 	}
 
+	static void _ShowTransferScreen() {
+		clsShowTransferScreen::ShowTransferScreen();
+	}
+
+	static void _ShowTransferLogScreen() {
+		clsShowTransferLogScreen::ShowTransferLogScreen();
+	}
+
 	static void _ApplyChoices(enTransMenuOptions Choice) {
 
 		switch (Choice)
@@ -58,6 +68,16 @@ private:
 		case clsTransactionScreen::TotalBalances:
 			ResetScreen();
 			_ShowTotalBalancesScreen();
+			_GoBackToTransMenu();
+			break;
+		case clsTransactionScreen::Transfer:
+			ResetScreen();
+			_ShowTransferScreen();
+			_GoBackToTransMenu();
+			break;
+		case clsTransactionScreen::TransferLog:
+			ResetScreen();
+			_ShowTransferLogScreen();
 			_GoBackToTransMenu();
 			break;
 		case clsTransactionScreen::MainMenu:
@@ -86,7 +106,9 @@ public:
 		cout << setw(32) << left << "" << "\t\t   [1] Deposit." << endl;
 		cout << setw(32) << left << "" << "\t\t   [2] Withdraw." << endl;
 		cout << setw(32) << left << "" << "\t\t   [3] Total Balances." << endl;
-		cout << setw(32) << left << "" << "\t\t   [4] Main Menu." << endl;
+		cout << setw(32) << left << "" << "\t\t   [4] Transfer." << endl;
+		cout << setw(32) << left << "" << "\t\t   [5] Transfer Log." << endl;
+		cout << setw(32) << left << "" << "\t\t   [6] Main Menu." << endl;
 		cout << setw(32) << left << "" << "\t==============================================" << endl;
 
 		_ApplyChoices((enTransMenuOptions)_ReadTransMenuOptions());
